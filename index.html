@@ -1,62 +1,1046 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meu site na nuvem CONECTA JOVEM</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 0; background: #fff7f0; }
-header { background: #2a6fdb; color: white; padding: 40px 20px; }
-main { max-width: 640px; margin: 0 auto; padding: 20px; }
-.cartao { background: white; border-radius: 12px; padding: 20px;
-margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Portfólio de Enzo Felippo, estudante de Ciência da Computação, interessado em desenvolvimento de software, computação em nuvem e inteligência artificial.">
+
+    <meta name="theme-color" content="#0b1120">
+
+    <title>Enzo Felippo | Portfólio</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --fundo: #0b1120;
+            --cartao: #111c30;
+            --cartao-secundario: #17263d;
+            --borda: #1e293b;
+            --texto: #e2e8f0;
+            --texto-secundario: #94a3b8;
+            --destaque: #38bdf8;
+            --botao: #0284c7;
+            --botao-hover: #0369a1;
+            --rodape: #64748b;
+        }
+
+        [data-theme="light"] {
+            --fundo: #f1f5f9;
+            --cartao: #ffffff;
+            --cartao-secundario: #e2e8f0;
+            --borda: #cbd5e1;
+            --texto: #1e293b;
+            --texto-secundario: #475569;
+            --destaque: #0284c7;
+            --botao: #0284c7;
+            --botao-hover: #0369a1;
+            --rodape: #64748b;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--fundo);
+            color: var(--texto);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--destaque);
+            outline-offset: 4px;
+        }
+
+        /* BARRA DE PROGRESSO */
+
+        .barra-progresso {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: var(--destaque);
+            z-index: 1001;
+        }
+
+        /* CABEÇALHO */
+
+        header {
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--borda);
+            position: sticky;
+            top: 0;
+            background: var(--fundo);
+            z-index: 1000;
+        }
+
+        .logo {
+            color: var(--destaque);
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .cabecalho-direita {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--texto);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        nav a:hover,
+        nav a.ativo {
+            color: var(--destaque);
+        }
+
+        .controle {
+            background: var(--cartao-secundario);
+            color: var(--texto);
+            border: 1px solid var(--borda);
+            padding: 9px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .controle:hover {
+            border-color: var(--destaque);
+        }
+
+        .menu-mobile {
+            display: none;
+        }
+
+        /* CONTEÚDO */
+
+        main {
+            max-width: 1000px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .inicio {
+            padding: 90px 0;
+        }
+
+        .inicio span {
+            color: var(--destaque);
+            font-weight: bold;
+        }
+
+        .inicio h1 {
+            font-size: clamp(36px, 6vw, 55px);
+            line-height: 1.2;
+            margin: 15px 0;
+        }
+
+        .inicio p {
+            color: var(--texto-secundario);
+            max-width: 600px;
+            font-size: 18px;
+        }
+
+        .botao {
+            display: inline-block;
+            margin-top: 25px;
+            margin-right: 10px;
+            padding: 12px 24px;
+            background: var(--botao);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .botao:hover {
+            background: var(--botao-hover);
+            transform: translateY(-3px);
+        }
+
+        section {
+            margin-bottom: 65px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--texto);
+        }
+
+        .cartao {
+            background: var(--cartao);
+            border: 1px solid var(--borda);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 18px;
+            transition: 0.3s;
+        }
+
+        .cartao:hover {
+            border-color: var(--destaque);
+            transform: translateY(-4px);
+        }
+
+        .cartao p {
+            color: var(--texto-secundario);
+        }
+
+        /* TECNOLOGIAS */
+
+        .tecnologias {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tecnologia {
+            background: var(--cartao-secundario);
+            color: var(--destaque);
+            border: 1px solid var(--borda);
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .tecnologia:hover {
+            border-color: var(--destaque);
+            transform: translateY(-3px);
+        }
+
+        .categoria {
+            margin-bottom: 25px;
+        }
+
+        .categoria h3 {
+            margin-bottom: 12px;
+            font-size: 17px;
+            color: var(--texto);
+        }
+
+        /* PROJETOS */
+
+        .projeto h3 {
+            color: var(--destaque);
+            margin-bottom: 8px;
+        }
+
+        .projeto details {
+            margin-top: 15px;
+            border-top: 1px solid var(--borda);
+            padding-top: 12px;
+        }
+
+        .projeto summary {
+            color: var(--destaque);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .projeto details p {
+            margin-top: 12px;
+        }
+
+        /* CONTATO */
+
+        .redes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* MENSAGEM DA NUVEM */
+
+        #mensagem,
+        #hora-nuvem,
+        #hora-local {
+            color: var(--texto-secundario);
+            margin-top: 10px;
+        }
+
+        .status-nuvem {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: var(--cartao-secundario);
+            color: var(--texto-secundario);
+            font-size: 13px;
+        }
+
+        /* BOTÃO VOLTAR AO TOPO */
+
+        #voltar-topo {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 45px;
+            height: 45px;
+            background: var(--botao);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+            z-index: 999;
+        }
+
+        #voltar-topo.visivel {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #voltar-topo:hover {
+            background: var(--botao-hover);
+            transform: translateY(-3px);
+        }
+
+        /* ANIMAÇÕES */
+
+        .revelar {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.7s, transform 0.7s;
+        }
+
+        .revelar.visivel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RODAPÉ */
+
+        footer {
+            text-align: center;
+            padding: 30px 15px;
+            border-top: 1px solid var(--borda);
+            color: var(--rodape);
+        }
+
+        /* RESPONSIVIDADE */
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 15px 5%;
+            }
+
+            .cabecalho-direita {
+                gap: 10px;
+            }
+
+            .menu-mobile {
+                display: block;
+            }
+
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--fundo);
+                border-bottom: 1px solid var(--borda);
+                padding: 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav.aberto {
+                display: flex;
+            }
+
+            nav a {
+                text-align: center;
+                padding: 8px;
+            }
+
+            .inicio {
+                padding: 60px 0;
+            }
+
+            .inicio h1 {
+                font-size: 36px;
+            }
+
+            .cartao {
+                padding: 20px;
+            }
+
+            main {
+                padding: 30px 18px;
+            }
+        }
+
+        /* ACESSIBILIDADE */
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .revelar {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+    </style>
 </head>
+
 <body>
-<header>
-<h1>Olá, eu sou o Abranches! @@@@@@@@@             !!!!!</h1>
-<p>Professor do Projeto Conecta Jovem</p>
-</header>
-<main>
-<section class="cartao">
-<h2>Sobre mim</h2>
-<p>Moro em Cuiabá e estou aprendendo nuvem e inteligência artificial.</p>
-</section>
-<section class="cartao">
-<h2>Meus projetos</h2>
-<ul>
-<li>Jogo de plataforma feito no Game Studio</li>
-<li>Este site, publicado na nuvem</li>
-</ul>
-<p><a href="/ia.html">Experimente o meu resumidor com IA</a></p>
-</section>
-<section class="cartao">
-  <h2>Mensagem da nuvem</h2>
-  <p id="mensagem">Carregando...</p>
-  <p id="hora-nuvem"></p>
-  <p id="hora-local"></p>
-</section>
-<script>
-  function atualizar() {
-    fetch('/api/oi')
-      .then(resposta => resposta.json())
-      .then(dados => {
-        const texto = dados.mensagemns + ' (' + dados.turma + ')';
-        document.getElementById('mensagem').textContent = texto;
-        // compara o horário gerado na nuvem (UTC) com o do seu computador
-        const nuvem = new Date(dados.horario).toLocaleTimeString('pt-BR', { timeZone: 'UTC' });
-        const local = new Date().toLocaleTimeString('pt-BR');
-        document.getElementById('hora-nuvem').textContent = 'Horário da nuvem (UTC): ' + nuvem;
-        document.getElementById('hora-local').textContent = 'Horário do seu computador: ' + local;
-      })
-      .catch(() => {
-        document.getElementById('mensagem').textContent = 'Não foi possível falar com a função.';
-      });
-  }
-  atualizar();
-  // pede uma nova resposta para a nuvem a cada 5 segundos
-  setInterval(atualizar, 5000);
-</script>
-</main>
+
+    <div
+        class="barra-progresso"
+        id="barra-progresso"
+        aria-hidden="true">
+    </div>
+
+    <!-- CABEÇALHO -->
+
+    <header>
+
+        <a href="#inicio" class="logo">Enzo.dev</a>
+
+        <div class="cabecalho-direita">
+
+            <nav id="navegacao" aria-label="Navegação principal">
+                <a href="#sobre">Sobre</a>
+                <a href="#tecnologias">Tecnologias</a>
+                <a href="#projetos">Projetos</a>
+                <a href="#contato">Contato</a>
+            </nav>
+
+            <button
+                class="controle"
+                id="tema"
+                aria-label="Alternar tema">
+                ☀️
+            </button>
+
+            <button
+                class="controle menu-mobile"
+                id="menu-mobile"
+                aria-label="Abrir menu"
+                aria-expanded="false"
+                aria-controls="navegacao">
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+    <main>
+
+        <!-- INÍCIO -->
+
+        <section class="inicio" id="inicio">
+
+            <span>OLÁ, SEJA BEM-VINDO AO MEU PORTFÓLIO</span>
+
+            <h1>Olá, eu sou o Enzo Felippo!</h1>
+
+            <p>
+                Estudante de Ciência da Computação,
+                apaixonado por tecnologia e desenvolvimento.
+                Atualmente estou expandindo meus conhecimentos
+                em computação em nuvem e inteligência artificial.
+            </p>
+
+            <a href="#projetos" class="botao">
+                Conheça meus projetos
+            </a>
+
+        </section>
+
+        <!-- SOBRE -->
+
+        <section id="sobre" class="revelar">
+
+            <h2>Sobre mim</h2>
+
+            <div class="cartao">
+
+                <p>
+                    Sou estudante do 6º semestre de Ciência da
+                    Computação e participante do Projeto Conecta Jovem.
+
+                    Tenho interesse em programação, desenvolvimento
+                    de software e novas tecnologias.
+
+                    Gosto de aprender, explorar novas ferramentas
+                    e transformar conhecimentos em projetos práticos.
+
+                    Atualmente, estou aprofundando meus estudos
+                    em computação em nuvem e inteligência artificial.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- TECNOLOGIAS -->
+
+        <section id="tecnologias" class="revelar">
+
+            <h2>Tecnologias e conhecimentos</h2>
+
+            <div class="cartao">
+
+                <div class="categoria">
+
+                    <h3>Programação e desenvolvimento</h3>
+
+                    <div class="tecnologias">
+                        <span class="tecnologia">Python</span>
+                        <span class="tecnologia">C#</span>
+                        <span class="tecnologia">HTML</span>
+                        <span class="tecnologia">CSS</span>
+                    </div>
+
+                </div>
+
+                <div class="categoria">
+
+                    <h3>Banco de dados</h3>
+
+                    <div class="tecnologias">
+                        <span class="tecnologia">SQL</span>
+                        <span class="tecnologia">PostgreSQL</span>
+                    </div>
+
+                </div>
+
+                <div class="categoria">
+
+                    <h3>Ferramentas e conhecimentos</h3>
+
+                    <div class="tecnologias">
+                        <span class="tecnologia">Git</span>
+                        <span class="tecnologia">Computação em nuvem</span>
+                        <span class="tecnologia">Inteligência Artificial</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- PROJETOS -->
+
+        <section id="projetos" class="revelar">
+
+            <h2>Meus projetos</h2>
+
+            <div class="cartao projeto">
+
+                <h3>Jogo de plataforma</h3>
+
+                <p>
+                    Projeto de desenvolvimento de um jogo de
+                    plataforma utilizando Game Studio.
+                </p>
+
+                <details>
+                    <summary>Mais informações</summary>
+
+                    <p>
+                        Projeto desenvolvido para praticar conceitos
+                        de desenvolvimento de jogos e lógica de programação.
+                    </p>
+                </details>
+
+            </div>
+
+            <div class="cartao projeto">
+
+                <h3>Meu portfólio pessoal</h3>
+
+                <p>
+                    Desenvolvimento deste site utilizando
+                    HTML, CSS e JavaScript, com publicação em ambiente de nuvem.
+                </p>
+
+                <details>
+                    <summary>Mais informações</summary>
+
+                    <p>
+                        O projeto utiliza recursos de responsividade,
+                        integração com API, alternância de temas,
+                        animações e atualização de informações da nuvem.
+                    </p>
+                </details>
+
+            </div>
+
+            <!-- NOVO PROJETO: RESUMIDOR COM IA -->
+
+            <div class="cartao projeto">
+
+                <h3>Resumidor de textos com Inteligência Artificial</h3>
+
+                <p>
+                    Ferramenta que utiliza inteligência artificial
+                    para resumir textos e facilitar a compreensão
+                    de conteúdos.
+                </p>
+
+                <a href="/ia.html" class="botao">
+                    Experimentar resumidor com IA
+                </a>
+
+                <details>
+                    <summary>Mais informações</summary>
+
+                    <p>
+                        Acesse a ferramenta para experimentar
+                        a funcionalidade de resumo de textos.
+                    </p>
+                </details>
+
+            </div>
+
+            <!-- Adicione novos projetos aqui -->
+
+        </section>
+
+        <!-- CONTATO -->
+
+        <section id="contato" class="revelar">
+
+            <h2>Vamos nos conectar?</h2>
+
+            <div class="cartao">
+
+                <p>
+                    Estou sempre aberto a aprender, compartilhar
+                    conhecimentos e conhecer novas oportunidades
+                    na área de tecnologia.
+                </p>
+
+                <div class="redes">
+
+                    <a
+                        href="https://github.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="botao">
+                        Meu GitHub
+                    </a>
+
+                    <a
+                        href="https://linkedin.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="botao">
+                        Meu LinkedIn
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- MENSAGEM DA NUVEM -->
+
+        <section class="cartao revelar">
+
+            <h2>Mensagem da nuvem</h2>
+
+            <p id="mensagem" aria-live="polite">
+                Carregando mensagem...
+            </p>
+
+            <p id="hora-nuvem">
+                Horário da nuvem (UTC): aguardando...
+            </p>
+
+            <p id="hora-local">
+                Horário do seu computador: aguardando...
+            </p>
+
+            <span class="status-nuvem" id="status-nuvem">
+                Conectando à nuvem...
+            </span>
+
+        </section>
+
+    </main>
+
+    <!-- VOLTAR AO TOPO -->
+
+    <button
+        id="voltar-topo"
+        aria-label="Voltar ao topo"
+        title="Voltar ao topo">
+        ↑
+    </button>
+
+    <!-- RODAPÉ -->
+
+    <footer>
+
+        <p>
+            Desenvolvido por Enzo Felippo ©
+            <span id="ano"></span>
+        </p>
+
+    </footer>
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        // ELEMENTOS
+
+        const elementoMenu = document.getElementById('menu-mobile');
+        const navegacao = document.getElementById('navegacao');
+        const botaoTema = document.getElementById('tema');
+        const botaoTopo = document.getElementById('voltar-topo');
+        const barraProgresso = document.getElementById('barra-progresso');
+
+        // MENU MOBILE
+
+        elementoMenu.addEventListener('click', () => {
+
+            const aberto = navegacao.classList.toggle('aberto');
+
+            elementoMenu.setAttribute('aria-expanded', aberto);
+
+            elementoMenu.setAttribute(
+                'aria-label',
+                aberto ? 'Fechar menu' : 'Abrir menu'
+            );
+
+            elementoMenu.textContent = aberto ? '✕' : '☰';
+
+        });
+
+        // FECHAR MENU AO CLICAR EM UM LINK
+
+        document.querySelectorAll('nav a').forEach(link => {
+
+            link.addEventListener('click', () => {
+
+                navegacao.classList.remove('aberto');
+
+                elementoMenu.setAttribute('aria-expanded', 'false');
+                elementoMenu.setAttribute('aria-label', 'Abrir menu');
+
+                elementoMenu.textContent = '☰';
+
+            });
+
+        });
+
+        // TEMA CLARO E ESCURO
+
+        function aplicarTema(tema) {
+
+            document.documentElement.setAttribute('data-theme', tema);
+
+            botaoTema.textContent = tema === 'dark' ? '☀️' : '🌙';
+
+            botaoTema.setAttribute(
+                'aria-label',
+                tema === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'
+            );
+
+            document.querySelector('meta[name="theme-color"]')
+                .setAttribute(
+                    'content',
+                    tema === 'dark' ? '#0b1120' : '#f1f5f9'
+                );
+
+        }
+
+        let temaSalvo = 'dark';
+
+        try {
+            temaSalvo = localStorage.getItem('tema') || 'dark';
+        } catch (erro) {
+            console.warn('Não foi possível recuperar o tema.');
+        }
+
+        aplicarTema(temaSalvo);
+
+        botaoTema.addEventListener('click', () => {
+
+            const temaAtual =
+                document.documentElement.getAttribute('data-theme');
+
+            const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
+
+            aplicarTema(novoTema);
+
+            try {
+                localStorage.setItem('tema', novoTema);
+            } catch (erro) {
+                console.warn('Não foi possível salvar o tema.');
+            }
+
+        });
+
+        // BARRA DE PROGRESSO E BOTÃO VOLTAR AO TOPO
+
+        function atualizarPagina() {
+
+            const alturaTotal =
+                document.documentElement.scrollHeight - window.innerHeight;
+
+            const progresso = alturaTotal > 0
+                ? (window.scrollY / alturaTotal) * 100
+                : 0;
+
+            barraProgresso.style.width = `${progresso}%`;
+
+            if (window.scrollY > 300) {
+                botaoTopo.classList.add('visivel');
+            } else {
+                botaoTopo.classList.remove('visivel');
+            }
+
+        }
+
+        window.addEventListener('scroll', atualizarPagina, {
+            passive: true
+        });
+
+        window.addEventListener('resize', atualizarPagina);
+
+        atualizarPagina();
+
+        botaoTopo.addEventListener('click', () => {
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+        });
+
+        // ANIMAÇÕES AO ROLAR A PÁGINA
+
+        const elementosRevelar = document.querySelectorAll('.revelar');
+
+        if ('IntersectionObserver' in window) {
+
+            const observador = new IntersectionObserver((entradas, observer) => {
+
+                entradas.forEach(entrada => {
+
+                    if (entrada.isIntersecting) {
+
+                        entrada.target.classList.add('visivel');
+
+                        observer.unobserve(entrada.target);
+
+                    }
+
+                });
+
+            }, {
+                threshold: 0.12
+            });
+
+            elementosRevelar.forEach(elemento => {
+                observador.observe(elemento);
+            });
+
+        } else {
+
+            elementosRevelar.forEach(elemento => {
+                elemento.classList.add('visivel');
+            });
+
+        }
+
+        // INDICAR SEÇÃO ATUAL NO MENU
+
+        const secoes = document.querySelectorAll('main section[id]');
+
+        if ('IntersectionObserver' in window) {
+
+            const observadorSecoes = new IntersectionObserver((entradas) => {
+
+                entradas.forEach(entrada => {
+
+                    if (entrada.isIntersecting) {
+
+                        const id = entrada.target.id;
+
+                        document.querySelectorAll('nav a').forEach(link => {
+
+                            const ativo =
+                                link.getAttribute('href') === `#${id}`;
+
+                            link.classList.toggle('ativo', ativo);
+
+                        });
+
+                    }
+
+                });
+
+            }, {
+                rootMargin: '-20% 0px -65% 0px'
+            });
+
+            secoes.forEach(secao => {
+                observadorSecoes.observe(secao);
+            });
+
+        }
+
+        // ANO AUTOMÁTICO
+
+        document.getElementById('ano').textContent =
+            new Date().getFullYear();
+
+        // MENSAGEM E HORÁRIOS DA NUVEM
+
+        async function carregarMensagem() {
+
+            const elementoMensagem =
+                document.getElementById('mensagem');
+
+            const elementoHoraNuvem =
+                document.getElementById('hora-nuvem');
+
+            const elementoHoraLocal =
+                document.getElementById('hora-local');
+
+            const elementoStatus =
+                document.getElementById('status-nuvem');
+
+            try {
+
+                const resposta = await fetch('/api/oi', {
+                    cache: 'no-store'
+                });
+
+                if (!resposta.ok) {
+                    throw new Error('Erro ao consultar a API');
+                }
+
+                const dados = await resposta.json();
+
+                // Compatibilidade com os nomes de campo apresentados
+
+                const mensagem = dados.mensagem ?? dados.mensagemns;
+
+                if (!mensagem || !dados.turma || !dados.horario) {
+                    throw new Error('Resposta da API incompleta');
+                }
+
+                // MENSAGEM
+
+                elementoMensagem.textContent =
+                    `${mensagem} (${dados.turma})`;
+
+                // HORÁRIO DA NUVEM EM UTC
+
+                const dataNuvem = new Date(dados.horario);
+
+                if (isNaN(dataNuvem.getTime())) {
+                    throw new Error('Horário da nuvem inválido');
+                }
+
+                const horarioNuvem = dataNuvem.toLocaleTimeString(
+                    'pt-BR',
+                    {
+                        timeZone: 'UTC',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    }
+                );
+
+                elementoHoraNuvem.textContent =
+                    `Horário da nuvem (UTC): ${horarioNuvem}`;
+
+                // HORÁRIO LOCAL DO COMPUTADOR
+
+                const horarioLocal = new Date().toLocaleTimeString(
+                    'pt-BR',
+                    {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    }
+                );
+
+                elementoHoraLocal.textContent =
+                    `Horário do seu computador: ${horarioLocal}`;
+
+                // STATUS
+
+                elementoStatus.textContent =
+                    'Conectado à nuvem';
+
+            } catch (erro) {
+
+                console.error('Erro:', erro);
+
+                elementoMensagem.textContent =
+                    'Não foi possível falar com a função.';
+
+                elementoStatus.textContent =
+                    'Sem conexão com a nuvem';
+
+            }
+
+        }
+
+        // CONSULTA INICIAL
+
+        carregarMensagem();
+
+        // ATUALIZA A CADA 5 SEGUNDOS
+
+        setInterval(carregarMensagem, 5000);
+
+    </script>
+
 </body>
 </html>
