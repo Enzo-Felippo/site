@@ -1,75 +1,847 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resumidor de estudos com IA</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #fff7f0; }
-    main { max-width: 640px; margin: 0 auto; padding: 24px; }
-    textarea { width: 100%; box-sizing: border-box; padding: 12px; font-size: 16px; }
-    button { margin-top: 12px; padding: 12px 20px; font-size: 16px; border: 0;
-             border-radius: 8px; background: #ee6a33; color: white; }
-    button:disabled { background: #bbb; }
-    .etiqueta { display: inline-block; background: #fce3d3; border-radius: 12px;
-                padding: 4px 10px; margin: 4px 4px 0 0; }
-    .aviso { font-size: 13px; color: #777; }
-  </style>
-</head>
-<body>
-  <main>
-    <h1>Resumidor de estudos</h1>
-    <p>Cole um texto e a IA devolve um resumo e as palavras-chave.</p>
-    <textarea id="texto" rows="8" maxlength="2000"
-              placeholder="Cole aqui um texto de até 2.000 caracteres"></textarea>
-    <button id="botao">Resumir com IA</button>
-    <div id="resultado"></div>
-    <p class="aviso">Respostas geradas por inteligência artificial podem conter erros.
-      Não envie dados pessoais.</p>
-  </main>
-  <script>
-    const botao = document.getElementById('botao');
-    const resultado = document.getElementById('resultado');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    function mostrar(dados) {
-      resultado.replaceChildren();                // limpa o resultado anterior
-      const resumo = document.createElement('p');
-      resumo.textContent = dados.resumo;          // mostra como texto, com segurança
-      resultado.appendChild(resumo);
-      for (const palavra of dados.palavras_chave || []) {
-        const etiqueta = document.createElement('span');
-        etiqueta.className = 'etiqueta';
-        etiqueta.textContent = palavra;
-        resultado.appendChild(etiqueta);
-      }
-    }
+    <meta name="description" content="Ferramenta de resumo de textos utilizando inteligência artificial.">
 
-    botao.addEventListener('click', async () => {
-      const texto = document.getElementById('texto').value.trim();
-      if (!texto) {
-        resultado.textContent = 'Digite ou cole um texto primeiro.';
-        return;
-      }
-      botao.disabled = true;                      // evita cliques repetidos
-      resultado.textContent = 'Pensando...';
-      try {
-        const resposta = await fetch('/api/ia', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ texto: texto }),
-        });
-        const dados = await resposta.json();
-        if (resposta.ok) {
-          mostrar(dados);
-        } else {
-          resultado.textContent = dados.erro;
+    <meta name="theme-color" content="#0b1120">
+
+    <title>Resumidor com IA | Enzo.dev</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      } catch (erro) {
-        resultado.textContent = 'Sem conexão com o servidor. Tente de novo.';
-      } finally {
-        botao.disabled = false;
-      }
-    });
-  </script>
+
+        :root {
+            --fundo: #0b1120;
+            --cartao: #111c30;
+            --cartao-secundario: #17263d;
+            --borda: #1e293b;
+            --texto: #e2e8f0;
+            --texto-secundario: #94a3b8;
+            --destaque: #38bdf8;
+            --botao: #0284c7;
+            --botao-hover: #0369a1;
+            --sucesso: #22c55e;
+            --erro: #f87171;
+        }
+
+        [data-theme="light"] {
+            --fundo: #f1f5f9;
+            --cartao: #ffffff;
+            --cartao-secundario: #e2e8f0;
+            --borda: #cbd5e1;
+            --texto: #1e293b;
+            --texto-secundario: #475569;
+            --destaque: #0284c7;
+            --botao: #0284c7;
+            --botao-hover: #0369a1;
+            --sucesso: #16a34a;
+            --erro: #dc2626;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--fundo);
+            color: var(--texto);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--destaque);
+            outline-offset: 4px;
+        }
+
+        /* CABEÇALHO */
+
+        header {
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--borda);
+            background: var(--fundo);
+        }
+
+        .logo {
+            color: var(--destaque);
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .cabecalho-direita {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .voltar {
+            color: var(--texto);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .voltar:hover {
+            color: var(--destaque);
+        }
+
+        .controle {
+            background: var(--cartao-secundario);
+            color: var(--texto);
+            border: 1px solid var(--borda);
+            padding: 9px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* CONTEÚDO PRINCIPAL */
+
+        main {
+            max-width: 850px;
+            margin: auto;
+            padding: 55px 20px;
+        }
+
+        .introducao {
+            margin-bottom: 30px;
+        }
+
+        .introducao span {
+            color: var(--destaque);
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        h1 {
+            font-size: clamp(30px, 5vw, 42px);
+            line-height: 1.2;
+            margin: 12px 0;
+        }
+
+        .introducao p {
+            color: var(--texto-secundario);
+            font-size: 17px;
+            max-width: 650px;
+        }
+
+        /* CARTÕES */
+
+        .cartao {
+            background: var(--cartao);
+            border: 1px solid var(--borda);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+        .cartao h2 {
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .descricao {
+            color: var(--texto-secundario);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* ÁREA DE TEXTO */
+
+        .campo-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .campo-topo label {
+            font-weight: bold;
+        }
+
+        #contador {
+            font-size: 13px;
+            color: var(--texto-secundario);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 220px;
+            resize: vertical;
+            padding: 16px;
+            border: 1px solid var(--borda);
+            border-radius: 8px;
+            background: var(--cartao-secundario);
+            color: var(--texto);
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            transition: border 0.3s;
+        }
+
+        textarea::placeholder {
+            color: var(--texto-secundario);
+        }
+
+        textarea:focus {
+            border-color: var(--destaque);
+            outline: none;
+        }
+
+        /* BOTÕES */
+
+        .botoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .botao {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 8px;
+            background: var(--botao);
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .botao:hover:not(:disabled) {
+            background: var(--botao-hover);
+            transform: translateY(-2px);
+        }
+
+        .botao:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .botao-secundario {
+            background: var(--cartao-secundario);
+            color: var(--texto);
+            border: 1px solid var(--borda);
+        }
+
+        .botao-secundario:hover:not(:disabled) {
+            background: var(--borda);
+        }
+
+        /* RESULTADO */
+
+        #resultado {
+            display: none;
+        }
+
+        #resultado.visivel {
+            display: block;
+        }
+
+        .resultado-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .resultado-topo h2 {
+            margin: 0;
+        }
+
+        .resumo {
+            background: var(--cartao-secundario);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--borda);
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            line-height: 1.8;
+            color: var(--texto);
+        }
+
+        .palavras-chave {
+            margin-top: 22px;
+        }
+
+        .palavras-chave h3 {
+            font-size: 17px;
+            margin-bottom: 12px;
+        }
+
+        .etiquetas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .etiqueta {
+            display: inline-block;
+            background: var(--cartao-secundario);
+            color: var(--destaque);
+            border: 1px solid var(--borda);
+            border-radius: 20px;
+            padding: 7px 14px;
+            font-size: 13px;
+        }
+
+        /* MENSAGENS */
+
+        #mensagem-status {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--texto-secundario);
+            min-height: 22px;
+        }
+
+        #mensagem-status.erro {
+            color: var(--erro);
+        }
+
+        #mensagem-status.sucesso {
+            color: var(--sucesso);
+        }
+
+        .aviso {
+            color: var(--texto-secundario);
+            font-size: 13px;
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid var(--borda);
+        }
+
+        /* RODAPÉ */
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            border-top: 1px solid var(--borda);
+            color: var(--texto-secundario);
+            font-size: 13px;
+        }
+
+        /* RESPONSIVIDADE */
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 15px 5%;
+            }
+
+            .voltar {
+                font-size: 13px;
+            }
+
+            main {
+                padding: 35px 16px;
+            }
+
+            .cartao {
+                padding: 20px;
+            }
+
+            textarea {
+                min-height: 190px;
+            }
+
+            .botoes {
+                flex-direction: column;
+            }
+
+            .botao {
+                width: 100%;
+            }
+
+            .resultado-topo {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- CABEÇALHO -->
+
+    <header>
+
+        <a href="index.html" class="logo">Enzo.dev</a>
+
+        <div class="cabecalho-direita">
+
+            <a href="index.html" class="voltar">
+                ← Voltar ao portfólio
+            </a>
+
+            <button
+                class="controle"
+                id="tema"
+                aria-label="Alternar tema">
+                ☀️
+            </button>
+
+        </div>
+
+    </header>
+
+    <main>
+
+        <!-- INTRODUÇÃO -->
+
+        <section class="introducao">
+
+            <span>FERRAMENTA DE INTELIGÊNCIA ARTIFICIAL</span>
+
+            <h1>Resumidor de estudos</h1>
+
+            <p>
+                Transforme textos extensos em resumos objetivos
+                e organize os principais conceitos com ajuda
+                da inteligência artificial.
+            </p>
+
+        </section>
+
+        <!-- ÁREA DE ENTRADA -->
+
+        <section class="cartao">
+
+            <h2>Seu texto</h2>
+
+            <p class="descricao">
+                Cole ou digite o conteúdo que deseja resumir.
+            </p>
+
+            <div class="campo-topo">
+
+                <label for="texto">
+                    Texto para resumir
+                </label>
+
+                <span id="contador">
+                    0 / 2000
+                </span>
+
+            </div>
+
+            <textarea
+                id="texto"
+                maxlength="2000"
+                placeholder="Cole aqui seu texto de estudo..."
+                aria-describedby="contador">
+            </textarea>
+
+            <div class="botoes">
+
+                <button
+                    class="botao"
+                    id="botao">
+                    ✨ Resumir com IA
+                </button>
+
+                <button
+                    class="botao botao-secundario"
+                    id="limpar">
+                    Limpar texto
+                </button>
+
+            </div>
+
+            <p id="mensagem-status" aria-live="polite"></p>
+
+        </section>
+
+        <!-- RESULTADO -->
+
+        <section class="cartao" id="resultado">
+
+            <div class="resultado-topo">
+
+                <h2>Resultado do resumo</h2>
+
+                <button
+                    class="botao botao-secundario"
+                    id="copiar">
+                    📋 Copiar resumo
+                </button>
+
+            </div>
+
+            <div class="resumo" id="resumo"></div>
+
+            <div class="palavras-chave">
+
+                <h3>Palavras-chave</h3>
+
+                <div class="etiquetas" id="palavras-chave"></div>
+
+            </div>
+
+        </section>
+
+        <!-- AVISO -->
+
+        <section class="cartao">
+
+            <h2>Sobre a ferramenta</h2>
+
+            <p class="descricao">
+                Esta ferramenta utiliza inteligência artificial
+                para identificar os principais pontos de um texto
+                e gerar um resumo acompanhado de palavras-chave.
+            </p>
+
+            <p class="aviso">
+                As respostas geradas por inteligência artificial
+                podem conter erros. Sempre confira as informações
+                antes de utilizá-las em trabalhos ou estudos.
+                Não envie senhas, documentos ou dados pessoais.
+            </p>
+
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ -->
+
+    <footer>
+
+        <p>
+            Desenvolvido por Enzo Felippo ©
+            <span id="ano"></span>
+        </p>
+
+        <p>Projeto pessoal de estudos em inteligência artificial.</p>
+
+    </footer>
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        // ELEMENTOS
+
+        const texto = document.getElementById('texto');
+        const botao = document.getElementById('botao');
+        const limpar = document.getElementById('limpar');
+        const copiar = document.getElementById('copiar');
+
+        const resultado = document.getElementById('resultado');
+        const resumo = document.getElementById('resumo');
+        const palavrasChave = document.getElementById('palavras-chave');
+
+        const contador = document.getElementById('contador');
+        const mensagemStatus = document.getElementById('mensagem-status');
+
+        const botaoTema = document.getElementById('tema');
+
+        // CONTADOR DE CARACTERES
+
+        function atualizarContador() {
+
+            const quantidade = texto.value.length;
+
+            contador.textContent = `${quantidade} / 2000`;
+
+        }
+
+        texto.addEventListener('input', atualizarContador);
+
+        atualizarContador();
+
+        // TEMA CLARO E ESCURO
+
+        function aplicarTema(tema) {
+
+            document.documentElement.setAttribute('data-theme', tema);
+
+            botaoTema.textContent =
+                tema === 'dark' ? '☀️' : '🌙';
+
+            botaoTema.setAttribute(
+                'aria-label',
+                tema === 'dark'
+                    ? 'Ativar tema claro'
+                    : 'Ativar tema escuro'
+            );
+
+            document.querySelector('meta[name="theme-color"]')
+                .setAttribute(
+                    'content',
+                    tema === 'dark' ? '#0b1120' : '#f1f5f9'
+                );
+
+        }
+
+        let temaSalvo = 'dark';
+
+        try {
+
+            temaSalvo = localStorage.getItem('tema') || 'dark';
+
+        } catch (erro) {
+
+            console.warn('Não foi possível recuperar o tema.');
+
+        }
+
+        aplicarTema(temaSalvo);
+
+        botaoTema.addEventListener('click', () => {
+
+            const temaAtual =
+                document.documentElement.getAttribute('data-theme');
+
+            const novoTema =
+                temaAtual === 'dark' ? 'light' : 'dark';
+
+            aplicarTema(novoTema);
+
+            try {
+
+                localStorage.setItem('tema', novoTema);
+
+            } catch (erro) {
+
+                console.warn('Não foi possível salvar o tema.');
+
+            }
+
+        });
+
+        // MOSTRAR RESULTADO
+
+        function mostrar(dados) {
+
+            resultado.classList.add('visivel');
+
+            resumo.textContent = dados.resumo;
+
+            palavrasChave.replaceChildren();
+
+            const lista = dados.palavras_chave || [];
+
+            lista.forEach(palavra => {
+
+                const etiqueta = document.createElement('span');
+
+                etiqueta.className = 'etiqueta';
+
+                etiqueta.textContent = palavra;
+
+                palavrasChave.appendChild(etiqueta);
+
+            });
+
+            resultado.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+        }
+
+        // MENSAGENS DE STATUS
+
+        function mostrarStatus(mensagem, tipo = '') {
+
+            mensagemStatus.textContent = mensagem;
+
+            mensagemStatus.className = tipo;
+
+        }
+
+        // RESUMIR COM IA
+
+        botao.addEventListener('click', async () => {
+
+            const conteudo = texto.value.trim();
+
+            if (!conteudo) {
+
+                mostrarStatus(
+                    'Digite ou cole um texto antes de continuar.',
+                    'erro'
+                );
+
+                texto.focus();
+
+                return;
+
+            }
+
+            // LIMPAR RESULTADO ANTERIOR
+
+            resultado.classList.remove('visivel');
+
+            mostrarStatus('A inteligência artificial está analisando seu texto...');
+
+            botao.disabled = true;
+
+            botao.textContent = '⏳ Processando...';
+
+            try {
+
+                const resposta = await fetch('/api/ia', {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+                        texto: conteudo
+                    })
+
+                });
+
+                const dados = await resposta.json();
+
+                if (!resposta.ok) {
+
+                    throw new Error(
+                        dados.erro || 'Não foi possível gerar o resumo.'
+                    );
+
+                }
+
+                if (
+                    typeof dados.resumo !== 'string' ||
+                    !dados.resumo.trim()
+                ) {
+
+                    throw new Error('A IA retornou um resumo inválido.');
+
+                }
+
+                if (
+                    dados.palavras_chave !== undefined &&
+                    !Array.isArray(dados.palavras_chave)
+                ) {
+
+                    throw new Error('As palavras-chave retornadas são inválidas.');
+
+                }
+
+                mostrar(dados);
+
+                mostrarStatus(
+                    'Resumo gerado com sucesso!',
+                    'sucesso'
+                );
+
+            } catch (erro) {
+
+                console.error('Erro:', erro);
+
+                mostrarStatus(
+                    erro.message === 'Failed to fetch'
+                        ? 'Sem conexão com o servidor. Tente novamente.'
+                        : erro.message,
+                    'erro'
+                );
+
+            } finally {
+
+                botao.disabled = false;
+
+                botao.textContent = '✨ Resumir com IA';
+
+            }
+
+        });
+
+        // LIMPAR CONTEÚDO
+
+        limpar.addEventListener('click', () => {
+
+            texto.value = '';
+
+            resumo.textContent = '';
+
+            palavrasChave.replaceChildren();
+
+            resultado.classList.remove('visivel');
+
+            mostrarStatus('');
+
+            atualizarContador();
+
+            texto.focus();
+
+        });
+
+        // COPIAR RESUMO
+
+        copiar.addEventListener('click', async () => {
+
+            const conteudo = resumo.textContent;
+
+            if (!conteudo) {
+                return;
+            }
+
+            try {
+
+                await navigator.clipboard.writeText(conteudo);
+
+                copiar.textContent = '✓ Copiado!';
+
+                setTimeout(() => {
+
+                    copiar.textContent = '📋 Copiar resumo';
+
+                }, 2000);
+
+            } catch (erro) {
+
+                mostrarStatus(
+                    'Não foi possível copiar. Selecione o resumo manualmente.',
+                    'erro'
+                );
+
+            }
+
+        });
+
+        // ANO AUTOMÁTICO
+
+        document.getElementById('ano').textContent =
+            new Date().getFullYear();
+
+    </script>
+
 </body>
 </html>
